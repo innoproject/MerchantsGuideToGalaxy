@@ -21,13 +21,14 @@
   			<version>${junit-version}</version>
   		</dependency>
   		
-  		<!-- json-simple dependency to enable reading the .json file from the application's class path -->
+  		<!-- gson dependency to enable reading the .json file from the application's class path -->
   		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>${gson-version}</version>
 		</dependency>
     	
+    	<!-- logback-classic dependency for logging -->
     	<dependency>
         	<groupId>ch.qos.logback</groupId>
         	<artifactId>logback-classic</artifactId>

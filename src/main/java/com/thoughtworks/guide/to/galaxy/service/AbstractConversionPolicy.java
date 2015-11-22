@@ -95,8 +95,12 @@ public abstract class AbstractConversionPolicy {
 		int _final   = this._galaxyRules.getROMAN_TO_NUMERAL_MAPPER().get(_finalRoman);
 
 		if (_initial >= _final) {
-			if (checkValidOccurance(_manageOccurrances, _initialRoman)) {
-				_pair = new Pair(_final, _initial);
+			if (checkValidOccurance(_manageOccurrances, _initialRoman, _finalRoman)) {
+				if (_initial == _final) {
+					_pair = new Pair(_final, _initial);
+				} else {
+					_pair = new Pair(0, _initial);
+				}
 			}
 		} else {
 			if (checkValidSubtraction(_initialRoman, _finalRoman)) {
@@ -115,12 +119,16 @@ public abstract class AbstractConversionPolicy {
 	 * @return
 	 * @throws InvalidRomanException
 	 */
-	private boolean checkValidOccurance(HashMap<Character, Integer> _manageOccurrances, char _initialRoman) throws InvalidRomanException {
+	private boolean checkValidOccurance(HashMap<Character, Integer> _manageOccurrances, char _initialRoman, char _finalRoman) throws InvalidRomanException {
 		boolean _isValid = Boolean.FALSE.booleanValue();
 		
 		if (_manageOccurrances.containsKey(_initialRoman)) {
-			if (_manageOccurrances.get(_initialRoman) < this._galaxyRules.getMAX_REPETITION_ALLOWED().get(_initialRoman)) {
+			if (_initialRoman == _finalRoman) {
+				_manageOccurrances.put(_initialRoman, _manageOccurrances.get(_initialRoman) + 2);
+			} else {
 				_manageOccurrances.put(_initialRoman, _manageOccurrances.get(_initialRoman) + 1);
+			}
+			if (_manageOccurrances.get(_initialRoman) < this._galaxyRules.getMAX_REPETITION_ALLOWED().get(_initialRoman)) {
 				_isValid = Boolean.TRUE.booleanValue();
 			} else {
 				throw new InvalidRomanException(ErrorCode.MGG001, new String[] {this._roman, String.valueOf(_initialRoman)});
