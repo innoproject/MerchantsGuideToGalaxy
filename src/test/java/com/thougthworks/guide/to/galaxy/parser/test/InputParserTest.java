@@ -29,17 +29,8 @@ public class InputParserTest {
 	
 	private Parser _parser;
 	
-	@Before public void beforeTest() {
-		GalaxyRules _galaxyRules = ConversionRuleParser.getInstance().getGalaxyRules();
-		try {
-			InputStream _inputStream = InputReader.getStream("validInput-test.txt");
-			_parser = new ParseInputFromStream(_inputStream, _galaxyRules);
-		} catch (ApplicationLevelException _appException) {
-			LOGGER.error(_appException.getMessage());
-		}
-	}
-	
-	@Test public void outputTest() throws Exception {
+	@Test public void outputValidTest() throws Exception {
+		this.beforeTest("validInput-test.txt");
 		BuildFromPattern _buildFromPattern = _parser.parse();
 		Assert.assertNotNull(_buildFromPattern.getAnswerMapper());
 		
@@ -50,5 +41,29 @@ public class InputParserTest {
 		Assert.assertEquals("glob prok trot Silver", (Float)_answerMapper.get("glob prok trot Silver"), new Float(76.0));
 		Assert.assertEquals("glob prok pish tegj Gold", (Float)_answerMapper.get("glob prok pish tegj Gold"), new Float(616.0));
 		Assert.assertEquals("glob prok bleek Iron", (Float)_answerMapper.get("glob prok bleek Iron"), new Float(60.0));
+	}
+	
+	@Test public void outputInvalidTest() throws Exception {
+		this.beforeTest("invalidInput-test.txt");
+		BuildFromPattern _buildFromPattern = _parser.parse();
+		Assert.assertNotNull(_buildFromPattern.getAnswerMapper());
+		
+		Map<String, Object> _answerMapper = _buildFromPattern.getAnswerMapper();
+		Assert.assertEquals(4, _answerMapper.size());
+		
+		Assert.assertEquals("glob glob glob glob pish glob prok", (Float)_answerMapper.get("glob glob glob glob pish glob prok"), new Float(0));
+		Assert.assertEquals("bleek bleek trot Silver", (Float)_answerMapper.get("bleek bleek trot Silver"), new Float(0));
+		Assert.assertEquals("prok pish pish tegj Gold", (Float)_answerMapper.get("prok pish pish tegj Gold"), new Float(0));
+		Assert.assertEquals("bleek trot bleek Iron", (Float)_answerMapper.get("bleek trot bleek Iron"), new Float(0));
+	}
+	
+	private void beforeTest(String _fileName) {
+		GalaxyRules _galaxyRules = ConversionRuleParser.getInstance().getGalaxyRules();
+		try {
+			InputStream _inputStream = InputReader.getStream(_fileName);
+			_parser = new ParseInputFromStream(_inputStream, _galaxyRules);
+		} catch (ApplicationLevelException _appException) {
+			LOGGER.error(_appException.getMessage());
+		}
 	}
 }

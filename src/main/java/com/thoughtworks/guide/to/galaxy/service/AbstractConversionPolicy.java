@@ -121,21 +121,18 @@ public abstract class AbstractConversionPolicy {
 	 */
 	private boolean checkValidOccurance(HashMap<Character, Integer> _manageOccurrances, char _initialRoman, char _finalRoman) throws InvalidRomanException {
 		boolean _isValid = Boolean.FALSE.booleanValue();
+		int _increamentBy = (_initialRoman == _finalRoman) ? 2 : 1;
 		
-		if (_manageOccurrances.containsKey(_initialRoman)) {
-			if (_initialRoman == _finalRoman) {
-				_manageOccurrances.put(_initialRoman, _manageOccurrances.get(_initialRoman) + 2);
-			} else {
-				_manageOccurrances.put(_initialRoman, _manageOccurrances.get(_initialRoman) + 1);
-			}
-			if (_manageOccurrances.get(_initialRoman) < this._galaxyRules.getMAX_REPETITION_ALLOWED().get(_initialRoman)) {
-				_isValid = Boolean.TRUE.booleanValue();
-			} else {
-				throw new InvalidRomanException(ErrorCode.MGG001, new String[] {this._roman, String.valueOf(_initialRoman)});
-			}
+		if (_manageOccurrances.get(_initialRoman) == null) {
+			_manageOccurrances.put(_initialRoman, _increamentBy);
 		} else {
-			_manageOccurrances.put(_initialRoman, 1);
+			_manageOccurrances.put(_initialRoman, _manageOccurrances.get(_initialRoman) + _increamentBy);
+		}
+		
+		if (_manageOccurrances.get(_initialRoman) <= this._galaxyRules.getMAX_REPETITION_ALLOWED().get(_initialRoman)) {
 			_isValid = Boolean.TRUE.booleanValue();
+		} else {
+			throw new InvalidRomanException(ErrorCode.MGG001, new String[] {this._roman, String.valueOf(_initialRoman)});
 		}
 		
 		return _isValid;
